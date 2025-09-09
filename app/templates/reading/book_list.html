@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% block content %}
+<h2>本の一覧</h2>
+<form method="get">
+    <input name="q" value="{{ request.GET.q }}" placeholder="タイトル/著者を検索">
+    <button>検索</button>
+</form>
+
+<ul>
+    {% for b in object_list %}
+    <li><a href="{% url 'book_detail' b.id %}">{{ b.title }}</a> {% if b.author %}- {{ b.author }}{% endif %}</li>
+    {% empty %}
+    <li>作品がありません。</li>
+    {% endfor %}
+</ul>
+
+{% if is_paginated %}
+<p>
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q }}">前へ</a>
+    {% endif %}
+    {{ page_obj.number }}/{{ page_obj.paginator.num_pages }}
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q }}">次へ</a>
+    {% endif %}
+</p>
+{% endif %}
+{% endblock %}

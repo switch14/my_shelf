@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}My Shelf{% endblock %}</title>
+</head>
+<body>
+  <header>
+    <h1><a href="{% url 'book_list' %}">My Shelf</a></h1>
+    {% if user.is_authenticated %}
+      <p>{{ user.username }} さん | <a href="{% url 'logout' %}">ログアウト</a></p>
+    {% else %}
+      <p><a href="{% url 'login' %}">ログイン</a> | <a href="{% url 'signup' %}">サインアップ</a></p>
+    {% endif %}
+  </header>
+  <hr>
+
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% block content %}{% endblock %}
+
+  <hr>
+  <footer>&copy; 2025 My Shelf</footer>
+</body>
+</html>
