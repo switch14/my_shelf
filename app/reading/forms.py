@@ -1,21 +1,18 @@
 from django import forms
-from .models import Review
+from .models import Review, Tag
 
 class ReviewForm(forms.ModelForm):
-    tags_input = forms.CharField(
-        required=False,
-        help_text="カンマ区切りで入力してください。（ビジネス,小説,漫画）",
-        label ="タグ"
-    )
-
     class Meta:
         model = Review
-        fields = ["rating", "comment", "read_date", "tags_input"]
-
-    def __init__(self,*args,**kwargs):
-        super().__init__(*args,**kwargs)
-        if self.isinstance and self.instance.pk: #Reviewオブジェクトが存在する場合＝更新の場合
-            current = list(self.instance.tags.values_list("name", flat=True))
-            if current:
-                self.fields["tags_input"].initial = ", ".join(current)
+        fields = ["rating", "comment", "read_date", "tags"]
+        widgets = {
+            "read_date": forms.DateInput(attrs={"type": "date"}),
+            "tags": forms.SelectMultiple,
+        }
     
+    def __init__(self, *args, **kwargs):
+        """タグの選択肢をログインユーザーのタグに限定"""
+        self.request = kwargs.pop("request", None)
+        super().__init__(*args, **kwargs)
+        if self.request:
+            self.fields["tags"].queryset = Tag.objects.filter(owner=self.request.user).order_by('name')

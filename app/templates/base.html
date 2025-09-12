@@ -10,7 +10,7 @@
     {% if user.is_authenticated %}
       <p>{{ user.username }} さん | <a href="{% url 'logout' %}">ログアウト</a></p>
     {% else %}
-      <p><a href="{% url 'login' %}">ログイン</a> | <a href="{% url 'signup' %}">サインアップ</a></p>
+      <p><a href="{% url 'login' %}">ログイン</a> | </p>
     {% endif %}
   </header>
   <hr>

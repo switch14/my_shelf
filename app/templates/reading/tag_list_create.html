@@ -1,0 +1,20 @@
+{% extends "base.html" %}{% block content %}
+<h2>タグ管理</h2>
+
+<form method="post" style="margin-bottom:1rem;">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">作成</button>
+</form>
+
+<h3>あなたのタグ一覧</h3>
+<ul>
+    {% for t in tags %}
+    <li>#{{ t.name }}</li>
+    {% empty %}
+    <li>タグがありません。</li>
+    {% endfor %}
+</ul>
+
+<p><a href="{% url 'book_list' %}">← 本の一覧へ戻る</a></p>
+{% endblock %}
