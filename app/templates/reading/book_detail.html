@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% block content %}
+<h2>{{ object.title }}</h2>
+<p>著者: {{ object.author }}</p>
+
+{% if my_review %}
+<h3>あなたのレビュー</h3>
+<p>評価: {{ my_review.rating }}</p>
+<p>{{ my_review.comment|default:"(コメントなし)" }}</p>
+<p>タグ:
+    {% for t in my_review.tags.all %}#{{ t.name }} {% empty %}なし{% endfor %}
+</p>
+<p><a href="{% url 'review_edit' my_review.id %}">編集する</a></p>
+{% else %}
+<p><a href="{% url 'review_create' object.id %}">この本をレビューする</a></p>
+{% endif %}
+
+<h3>他のレビュー</h3>
+<ul>
+    {% for r in other_reviews %}
+    <li>{{ r.user.username }}: {{ r.rating }} - {{ r.comment|default:"(コメントなし)" }}</li>
+    {% empty %}
+    <li>まだレビューがありません。</li>
+    {% endfor %}
+</ul>
+
+<p><a href="{% url 'book_list' %}">← 一覧へ戻る</a></p>
+{% endblock %}
