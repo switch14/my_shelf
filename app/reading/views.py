@@ -5,7 +5,7 @@ from django.views.generic import ListView,DetailView,UpdateView,CreateView
 from django.db import transaction
 from django.contrib import messages
 from .models import Book, Review, Tag
-from .forms import ReviewForm
+from .forms import ReviewForm,BookForm
 
 # Create your views here.
 class BookListView(LoginRequiredMixin, ListView):
@@ -108,3 +108,11 @@ class TagListCreateView(LoginRequiredMixin, CreateView):
         # ★自分のタグだけ一覧表示
         ctx["tags"] = Tag.objects.filter(owner=self.request.user).order_by("name")
         return ctx
+    
+class BookCreateView(LoginRequiredMixin, CreateView):
+    model = Book
+    form_class = BookForm
+    template_name = "reading/book_form.html"
+    
+    def get_success_url(self):
+        return reverse_lazy("book_detail", args=[self.object.pk])

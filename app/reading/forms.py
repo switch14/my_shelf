@@ -1,5 +1,5 @@
 from django import forms
-from .models import Review, Tag
+from .models import Review, Tag,Book
 
 class ReviewForm(forms.ModelForm):
     class Meta:
@@ -16,3 +16,11 @@ class ReviewForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if self.request:
             self.fields["tags"].queryset = Tag.objects.filter(owner=self.request.user).order_by('name')
+
+class BookForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = ["title", "author", "year"]
+        widgets = {
+            "year": forms.NumberInput(attrs={"min": 0, "max": 2100}),
+        }
