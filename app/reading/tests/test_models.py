@@ -12,12 +12,22 @@ class ModelTests(TestCase):
         self.tag = Tag.objects.create(owner=self.user, name="お気に入り")
 
     def test_book_str(self):
+        """
+        Book.bookが書籍タイトルを正しく返すことを検証するテスト
+        """
         self.assertEqual(str(self.book), "Django入門")
 
     def test_tag_str(self):
+        """
+        Tag.tagがタグ名を正しく返すことを検証するテスト
+        """
         self.assertEqual(str(self.tag), "お気に入り")
 
     def test_review_str_and_unique_together(self):
+        """
+        Review.reviewが「書籍タイトル - 評価」を正しく返すこと。
+        同一ユーザーが同一書籍のレビューを作成できないことを確認するためのテスト。
+        """
         r = Review.objects.create(user=self.user, book=self.book, rating=5, comment="良かった")
         self.assertEqual(str(r), f"{self.book.title} - {r.rating}")
 

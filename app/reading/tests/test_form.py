@@ -15,6 +15,9 @@ class ReviewFormTests(TestCase):
         self.book = Book.objects.create(title="本1", author="A")
 
     def test_tags_queryset_limited_to_request_user(self):
+        """
+        フォーム内のタグ選択肢がリクエストユーザーのタグに限定されていることを検証するテスト
+        """
         request = self.factory.get("/")
         request.user = self.user1
         form = ReviewForm(request=request)
@@ -23,6 +26,9 @@ class ReviewFormTests(TestCase):
         self.assertNotIn(self.tag2, qs)
 
     def test_read_date_widget_type(self):
+        """
+        フォーム内のread_dateフィールドのwidgetがDate型であることを検証するテスト
+        """
         form = ReviewForm()
         widget = form.fields["read_date"].widget
         # DateInput の input_type は 'date' であること

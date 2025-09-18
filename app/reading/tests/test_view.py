@@ -20,6 +20,9 @@ class ViewTests(TestCase):
         self.tag_u2 = Tag.objects.create(owner=self.user2, name="積読")
 
     def test_book_list_search(self):
+        """
+        book_listビューにおいて、book1が含まれること、およびbook2が含まれないことを検証するテスト。
+        """
         self.client.force_login(self.user1)
         url = reverse("book_list")
         resp = self.client.get(url, {"q": "Django"})
@@ -29,6 +32,9 @@ class ViewTests(TestCase):
         self.assertNotIn(self.book2, resp.context["object_list"])
 
     def test_book_detail_context_reviews(self):
+        """
+        book_detailビューにおいて、自分のレビューと他者のレビューがいずれも正しくcontextに提供されていることを検証するテスト。
+        """
         self.client.force_login(self.user1)
         url = reverse("book_detail", args=[self.book1.pk])
         resp = self.client.get(url)
@@ -42,6 +48,9 @@ class ViewTests(TestCase):
         self.assertTrue(all(hasattr(r, "user") for r in other))
 
     def test_review_create_redirects_if_exists(self):
+        """
+        review_createビューにおいて、既に自分のレビューが存在する場合、review_editへリダイレクトされることを検証するテスト。
+        """
         self.client.force_login(self.user1)
         url = reverse("review_create", args=[self.book1.pk])
         resp = self.client.get(url)
@@ -50,13 +59,19 @@ class ViewTests(TestCase):
         self.assertIn(reverse("review_edit", args=[self.review1.pk]), resp["Location"])
 
     def test_review_update_forbidden_for_other_user(self):
-        # 他ユーザーのレビュー編集ページは404になる（get_querysetでフィルタ）
+        """
+        user1でログイン後、user2のレビュー編集ページにアクセスすると404になることを検証するテスト。
+        """
         self.client.force_login(self.user1)
         url = reverse("review_edit", args=[self.review2.pk])
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 404)
 
     def test_tag_list_create_view_shows_and_creates_user_tags(self):
+        """
+        ・tag_list_createビューがログインしているユーザーのタグのみを表示することを検証するテスト。
+        ・tag_list_createビューで新しいタグを作成した際、そのタグの所有者がログインユーザーになることを検証するテスト。
+        """
         self.client.force_login(self.user1)
         url = reverse("tag_list_create")
         # GET: 自分のタグのみが context にある
